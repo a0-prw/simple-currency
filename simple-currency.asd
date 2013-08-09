@@ -33,6 +33,7 @@
     currencies using data published daily by the European Central
     Bank, no guarantees about the accuracy of the data are given or
     even implied. For details of the ECB FX rates see:
+
     http://www.ecb.int/stats/exchange/eurofxref/html/index.en.html"
     
     :version "0.0.1"

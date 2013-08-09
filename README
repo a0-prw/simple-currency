@@ -1,5 +1,7 @@
 This is a quick and dirty library for converting between currencies
-using the foreign exchange information posted daily at:
+using the foreign exchange information posted daily by the ECB. You
+can find more information on the time of updates etc at:
+
 http://www.ecb.int/stats/exchange/eurofxref/html/index.en.html
 
 The library is so simple that it is easier for a user to just read the
@@ -9,8 +11,7 @@ documentation.
 
 Usage:
 
-First call
-
+(ql:quickload :simple-currency)
 (cies:update-currencies-hash)
 
 If it does not return NIL, you are ready to go
@@ -26,4 +27,10 @@ example:
 If you want it to look like a money amount, you have to do any
 coercion and rounding yourself, likewise checking the interval for
 unacceptably old quotations - see documentation for simple-date.
+
+Remember that floats "contaminate" so if you do 
+
+(cies:convert 100.25 :eur :usd)
+
+You will get a float back.
 
