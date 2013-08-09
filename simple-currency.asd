@@ -29,13 +29,20 @@
 
 (defsystem "simple-currency"
 
-    :description "SIMPLE-CURRENCY provides conversions between currencies using data published daily by the European Central Bank, no guarantees about the accuracy of the data are given or even implied."
+    :description "SIMPLE-CURRENCY provides conversions between
+    currencies using data published daily by the European Central
+    Bank, no guarantees about the accuracy of the data are given or
+    even implied. For details of the ECB FX rates see:
+    http://www.ecb.int/stats/exchange/eurofxref/html/index.en.html"
+    
     :version "0.0.1"
     :author "Peter Wood, email: pete_wood at runbox.com"
     :license "BSD, 2 clause."
     :depends-on (:drakma
                  :xmls
-                 :split-sequence)
+                 :simple-date
+                 :split-sequence
+                 :cl-store)
     :serial t
     :components ((:file "package") 
                  (:file "simple-currency")))
