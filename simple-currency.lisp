@@ -126,8 +126,15 @@ call (AVAILABLE-CURRENCIES)."))
     (values (* amount (/ 1 (getbase nfrom)))
             (interval-since-update date))))
 
+;; These assume that 2 digits after the decimal are correct for the
+;; currency
+(defun 2dd-round (rat)
+  (unless (rationalp rat)
+    (error "I require a RAT! I was given ~S." rat))
+  (/ (round (* rat 100)) 100))
 
-
+(defun display-currency (amount)
+  (format t "~$" (2dd-round amount)))
 
 
 
