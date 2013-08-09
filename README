@@ -1,0 +1,27 @@
+This is a quick and dirty library for converting between currencies
+using the foreign exchange information posted daily at:
+http://www.ecb.int/stats/exchange/eurofxref/html/index.en.html
+
+The library is so simple that it is easier for a user to just read the
+documentation strings and the function definitions themselves, so
+please look at simple-currency.lisp if you want more detailed
+documentation.
+
+Usage:
+
+First call
+
+(cies:update-currencies-hash)
+
+If it does not return NIL, you are ready to go
+
+example:
+
+(cies:convert 100 :usd :gbp)
+
+==> 
+10775/167
+#<SIMPLE-DATE:INTERVAL P1D>
+
+You have to do any coercion and rounding yourself.
+
