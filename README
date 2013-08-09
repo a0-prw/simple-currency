@@ -23,5 +23,7 @@ example:
 10775/167
 #<SIMPLE-DATE:INTERVAL P1D>
 
-You have to do any coercion and rounding yourself.
+If you want it to look like a money amount, you have to do any
+coercion and rounding yourself, likewise checking the interval for
+unacceptably old quotations - see documentation for simple-date.
 
