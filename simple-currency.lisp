@@ -59,7 +59,7 @@ old table, or NIL if both options failed for any reason."
                (xmls:parse 
                 (drakma:http-request 
                  "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml")))))
-    (if xml
+    (if xml  ;; Apologies - this is particularly gross
         (destructuring-bind ((jnk1 jnk2 (jnk3 ((dvar date)) &rest currencies)))
             (xmls:xmlrep-find-child-tags "Cube" xml)
           (declare (ignore jnk1 jnk2 jnk3 dvar))
@@ -127,14 +127,18 @@ call (AVAILABLE-CURRENCIES)."))
             (interval-since-update date))))
 
 ;; These assume that 2 digits after the decimal are correct for the
-;; currency
+;; currency and we don't even *care* about type of rounding
+;; used. Yeeha!
 (defun 2dd-round (rat)
   (unless (rationalp rat)
     (error "I require a RAT! I was given ~S." rat))
   (/ (round (* rat 100)) 100))
 
-(defun display-currency (amount)
-  (format t "~$" (2dd-round amount)))
+(defun display-currency (amount &optional ccode)
+  (let ((am (2dd-round amount)))
+    (if ccode 
+        (format nil "~A ~$" (normalize-currency-designator ccode) am)
+        (format nil "~$" am))))
 
 
 
