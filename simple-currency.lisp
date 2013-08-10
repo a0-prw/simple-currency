@@ -38,7 +38,7 @@
           (expt 10 (length frac))))))
 
 (defun make-date (string)
-  (destructuring-bind (yr mo da) ;;CHECK
+  (destructuring-bind (yr mo da)
       (mapcar #'parse-integer
               (split-sequence:split-sequence #\- string))
     (simple-date:encode-date yr mo da)))
@@ -129,6 +129,7 @@ call (AVAILABLE-CURRENCIES)."))
 ;; These assume that 2 digits after the decimal are correct for the
 ;; currency and we don't even *care* about type of rounding
 ;; used. Yeeha!
+
 (defun 2dd-round (rat)
   (unless (rationalp rat)
     (error "I require a RAT! I was given ~S." rat))
