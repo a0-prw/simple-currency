@@ -141,5 +141,33 @@ call (AVAILABLE-CURRENCIES)."))
         (format nil "~A ~$" (normalize-currency-designator ccode) am)
         (format nil "~$" am))))
 
+;;NOT right -- FIXME
+(defmacro with-currency (currency conversion-form)
+  (let (binds converted-form)
+    (labels ((triple (list)
+               (and (car list)
+                    (cadr list)
+                    (caddr list)))
+             (tree-rec (tree)
+               (if (atom tree) 
+                   tree
+                   (let ((head (car tree))
+                         (tail (cdr tree)))
+                     (if (consp head)
+                         (if (and (triple head)
+                                  (eql (car head) 'convert)
+                                  (numberp (cadr head))
+                                  (keywordp (caddr head)))
+                             (let ((var (gensym))
+                                   (bind `(convert ,(cadr head) ,currency ,(caddr head))))
+                               (setf binds (push (list var bind) binds))
+                               (cons `(display-currency ,var ,currency) (tree-rec tail))))
+                         (cons (tree-rec head)
+                               (tree-rec tail)))))))
+      (setf converted-form (tree-rec conversion-form))
+      `(let ,binds
+         ,converted-form))))
+                            
+
 
 

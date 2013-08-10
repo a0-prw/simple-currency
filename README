@@ -24,16 +24,15 @@ example:
 861350/13373
 #<SIMPLE-DATE:INTERVAL P1D>
 
-If you want it to look like a money amount, you have to do any
-coercion and rounding yourself:
+If you want it to look like a money amount, you can do
 
 (cies:display-currency (cies:convert 100 :usd :gbp) :gbp)
 
 ==>
 "GBP 64.41"
 
- likewise checking the interval for
-unacceptably old quotations - see documentation for simple-date.
+Likewise with checking the interval for unacceptably old quotations -
+see documentation for simple-date.
 
 Remember that floats "contaminate" so if you do 
 
