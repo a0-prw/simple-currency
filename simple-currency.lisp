@@ -32,7 +32,7 @@
 (defvar *stored-currency-hash* "stored-currency-hash")
 
 (defclass currency-data ()
-  ((country :initarg :country :type 'string :reader ccy-country)
+  ((country :initarg :country :reader ccy-country)
    (name :initarg :name :type 'string :reader ccy-name)
    (acode :initarg :acode :type 'string :reader ccy-acode)
    (ncode :initarg :ncode :type 'string :reader ccy-ncode)
@@ -48,13 +48,17 @@
                                  (lab5 ddigits))
                 val
               (declare (ignore lab1 lab2 lab3 lab4 lab5))
-              (setf (gethash acode *currency-data*)
-                    (make-instance 'currency-data
-                                   :country country
-                                   :name ccy-name
-                                   :acode acode
-                                   :ncode ncode
-                                   :ddigits ddigits))))))
+              (let ((cd (gethash acode *currency-data*)))
+                (if cd 
+                    (setf (ccy-country cd)
+                          (cons country (ccy-country cd)))
+                    (setf (gethash acode *currency-data*)
+                          (make-instance 'currency-data
+                                         :country (list country)
+                                         :name ccy-name
+                                         :acode acode
+                                         :ncode ncode
+                                         :ddigits ddigits))))))))
 
 (build-currency-data-hash)
 

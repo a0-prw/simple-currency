@@ -31,6 +31,7 @@
   (:export :update-currency-hash
            :available-currencies
            :convert :2dd-round :currency-data
-           :lookup-currency
+           :lookup-currency :ccy-name :ccy-ddigits 
+           :ccy-ncode :ccy-acode :ccy-country
            :display-currency :with-currency          
            :*stored-currency-hash*))
