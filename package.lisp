@@ -30,6 +30,7 @@
   (:nicknames :cies)
   (:export :update-currency-hash
            :available-currencies
-           :convert :2dd-round 
-           :display-currency           
+           :convert :2dd-round :currency-data
+           :lookup-currency
+           :display-currency :with-currency          
            :*stored-currency-hash*))

@@ -28,7 +28,61 @@
 (in-package :cies)
 
 (defvar *currencies* (make-hash-table :test 'equal))
+(defvar *currency-data* (make-hash-table :test #'equalp))
 (defvar *stored-currency-hash* "stored-currency-hash")
+
+(defclass currency-data ()
+  ((country :initarg :country :type 'string :reader ccy-country)
+   (name :initarg :name :type 'string :reader ccy-name)
+   (acode :initarg :acode :type 'string :reader ccy-acode)
+   (ncode :initarg :ncode :type 'string :reader ccy-ncode)
+   (ddigits :initarg :ddigits :type 'string :reader ccy-ddigits)))
+
+(defun build-currency-data-hash ()
+  (with-open-file (sm "currency-info.lisp" :direction :input)
+    (loop for val = (read sm nil 'done) until (eql val 'done)
+         do (destructuring-bind ((lab1 country)
+                                 (lab2 ccy-name)
+                                 (lab3 acode)
+                                 (lab4 ncode)
+                                 (lab5 ddigits))
+                val
+              (declare (ignore lab1 lab2 lab3 lab4 lab5))
+              (setf (gethash acode *currency-data*)
+                    (make-instance 'currency-data
+                                   :country country
+                                   :name ccy-name
+                                   :acode acode
+                                   :ncode ncode
+                                   :ddigits ddigits))))))
+
+(build-currency-data-hash)
+
+(defgeneric lookup-currency (ccy))
+
+(defmethod lookup-currency ((ccy string))
+  (gethash ccy *currency-data*))
+
+(defmethod lookup-currency ((ccy symbol))
+  (gethash (normalize-currency-designator ccy) *currency-data*))
+
+(defgeneric currency-data (ccy query))
+
+(defmethod currency-data (ccy (query (eql :ddigits)))
+  (let ((cd (lookup-currency ccy)))
+    (when ccy (ccy-ddigits cd))))
+
+(defmethod currency-data (ccy (query (eql :country)))
+  (let ((cd (lookup-currency ccy)))
+    (when ccy (ccy-country cd))))
+
+(defmethod currency-data (ccy (query (eql :name)))
+  (let ((cd (lookup-currency ccy)))
+    (when ccy (ccy-name cd))))
+
+(defmethod currency-data (ccy (query (eql :ncode)))
+  (let ((cd (lookup-currency ccy)))
+    (when ccy (ccy-ncode cd))))
 
 (defun parse-rational (string)
   (destructuring-bind (int frac)
@@ -141,30 +195,28 @@ call (AVAILABLE-CURRENCIES)."))
         (format nil "~A ~$" (normalize-currency-designator ccode) am)
         (format nil "~$" am))))
 
-;;NOT right -- FIXME
 (defmacro with-currency (currency conversion-form)
   (let (binds converted-form)
     (labels ((triple (list)
                (and (car list)
                     (cadr list)
                     (caddr list)))
-             (tree-rec (tree)
+             (tree-replace (tree)
                (if (atom tree) 
                    tree
-                   (let ((head (car tree))
-                         (tail (cdr tree)))
-                     (if (consp head)
-                         (if (and (triple head)
-                                  (eql (car head) 'convert)
-                                  (numberp (cadr head))
-                                  (keywordp (caddr head)))
-                             (let ((var (gensym))
-                                   (bind `(convert ,(cadr head) ,currency ,(caddr head))))
-                               (setf binds (push (list var bind) binds))
-                               (cons `(display-currency ,var ,currency) (tree-rec tail))))
-                         (cons (tree-rec head)
-                               (tree-rec tail)))))))
-      (setf converted-form (tree-rec conversion-form))
+                   (if (and (triple tree)
+                            (eql (car tree) 'convert)
+                            (numberp (cadr tree))
+                            (keywordp (caddr tree)))
+                       (let ((var (gensym))
+                             (bind `(convert ,(cadr tree) ,currency ,(caddr tree))))
+                         (setf binds (push (list var bind) binds))
+                         `(display-currency ,var ,(caddr tree)))
+                       (let ((head (car tree))
+                             (tail (cdr tree)))
+                         (cons (tree-replace head)
+                               (tree-replace tail)))))))
+      (setf converted-form (tree-replace conversion-form))
       `(let ,binds
          ,converted-form))))
                             
