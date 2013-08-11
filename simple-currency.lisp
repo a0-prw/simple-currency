@@ -155,12 +155,12 @@ old table, or NIL if both options failed for any reason."
      date)))
 
 (defgeneric convert (amount from to)
-  (:documentation "Converts AMOUNT between currencies FROM and TO, which should be
-keywords designating 3 letter currency codes.  Returns 2 values: a
-rational number representing the converted amount in TO currency, and
-a SIMPLE-DATE:INTERVAL representing the interval since the currency
-hash was last updated.  For a list of available currency codes
-call (AVAILABLE-CURRENCIES)."))
+  (:documentation "Converts AMOUNT between currencies FROM and TO,
+which should be keywords designating 3 letter currency codes.  Returns
+2 values: a rational number representing the converted amount in TO
+currency, and a SIMPLE-DATE:INTERVAL representing the interval since
+the currency hash was last updated.  For a list of available currency
+codes call (AVAILABLE-CURRENCIES)."))
 
 (defmethod convert ((amount number) (from t) (to t))
   (declare (inline normalize-currency-designator getbase))
@@ -185,7 +185,7 @@ call (AVAILABLE-CURRENCIES)."))
             (interval-since-update date))))
 
 ;; These assume that 2 digits after the decimal are correct for the
-;; currency and we don't even *care* about type of rounding
+;; currency and we don't give a damn about type of rounding
 ;; used. Yeeha!
 
 (defun 2dd-round (rat)
