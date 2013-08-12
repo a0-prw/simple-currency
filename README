@@ -41,8 +41,8 @@ Likewise with checking the interval for unacceptably old quotations -
 see documentation for simple-date.
 
 NB: Remember that floats "contaminate" so if you do (CIES:CONVERT
-100.25 :eur :usd).  You will get a float back: display-currency
-calls a function which expects a rational.
+100.25 :eur :usd).  You will get a float back: display-currency calls
+a function which expects a rational, so that will signal an error.
 
 Convenience facilities:
 
