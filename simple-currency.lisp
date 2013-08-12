@@ -38,6 +38,7 @@
    (ncode :initarg :ncode :type 'string :reader ccy-ncode)
    (ddigits :initarg :ddigits :type 'string :reader ccy-ddigits)))
 
+
 (defun build-currency-data-hash ()
   (with-open-file (sm "currency-info.lisp" :direction :input)
     (loop for val = (read sm nil 'done) until (eql val 'done)
@@ -50,7 +51,7 @@
               (declare (ignore lab1 lab2 lab3 lab4 lab5))
               (let ((cd (gethash acode *currency-data*)))
                 (if cd 
-                    (setf (ccy-country cd)
+                    (setf (slot-value cd 'country)
                           (cons country (ccy-country cd)))
                     (setf (gethash acode *currency-data*)
                           (make-instance 'currency-data
