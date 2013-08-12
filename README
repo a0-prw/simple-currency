@@ -1,4 +1,4 @@
-This is a "quick and dirty" library for converting between currencies
+This is a simple library for converting between currencies
 using the foreign exchange information posted daily by the ECB. You
 can find more information on the time of updates etc at:
 
@@ -15,7 +15,7 @@ This package uses DRAKMA, XMLS, SIMPLE-DATE, SPLIT-SEQUENCE, and
 CL-STORE but if you use quicklisp (http://www.quicklisp.org/beta/),
 they will be automatically installed for you.  Put this package
 somewhere quicklisp can find it, by default under
-~/quicklisp/local-projects/.  Then do:
+~/quicklisp/local-projects/.  Then do the following 2 things:
 
 (ql:quickload :simple-currency)
 (CIES:UPDATE-CURRENCIES-HASH) ;;downloads currency info from ecb
@@ -40,8 +40,9 @@ If you want it to look like a money amount, you can do
 Likewise with checking the interval for unacceptably old quotations -
 see documentation for simple-date.
 
-NB: Remember that floats "contaminate" so if you do
-(CIES:CONVERT 100.25 :eur :usd).  You will get a float back.
+NB: Remember that floats "contaminate" so if you do (CIES:CONVERT
+100.25 :eur :usd).  You will get a float back: display-currency
+calls a function which expects a rational.
 
 Convenience facilities:
 
@@ -54,6 +55,12 @@ hold unintended surprises.
 There is a simple database of currency information which can be
 accessed with CIES:LOOKUP-CURRENCY, so for example, if you are in the
 SIMPLE-CURRENCY package or have USED it:
+
+(ccy-ddigits (lookup-currency :jpy))
+==>
+"0"
+
+Another example:
 
 (map 'list (lambda (acode)
                    (let ((cd (lookup-currency acode)))
