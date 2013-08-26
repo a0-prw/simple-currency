@@ -46,4 +46,5 @@
                  :cl-store)
     :serial t
     :components ((:file "package") 
-                 (:file "simple-currency")))
+                 (:file "simple-currency")
+                 (:file "currency-info")))

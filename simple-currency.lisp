@@ -28,66 +28,8 @@
 (in-package :cies)
 
 (defvar *currencies* (make-hash-table :test 'equal))
-(defvar *currency-data* (make-hash-table :test #'equalp))
+
 (defvar *stored-currency-hash* "stored-currency-hash")
-
-(defclass currency-data ()
-  ((country :initarg :country :reader ccy-country)
-   (name :initarg :name :type 'string :reader ccy-name)
-   (acode :initarg :acode :type 'string :reader ccy-acode)
-   (ncode :initarg :ncode :type 'string :reader ccy-ncode)
-   (ddigits :initarg :ddigits :type 'string :reader ccy-ddigits)))
-
-
-(defun build-currency-data-hash ()
-  (with-open-file (sm "currency-info.lisp" :direction :input)
-    (loop for val = (read sm nil 'done) until (eql val 'done)
-         do (destructuring-bind ((lab1 country)
-                                 (lab2 ccy-name)
-                                 (lab3 acode)
-                                 (lab4 ncode)
-                                 (lab5 ddigits))
-                val
-              (declare (ignore lab1 lab2 lab3 lab4 lab5))
-              (let ((cd (gethash acode *currency-data*)))
-                (if cd 
-                    (setf (slot-value cd 'country)
-                          (cons country (ccy-country cd)))
-                    (setf (gethash acode *currency-data*)
-                          (make-instance 'currency-data
-                                         :country (list country)
-                                         :name ccy-name
-                                         :acode acode
-                                         :ncode ncode
-                                         :ddigits ddigits))))))))
-
-(build-currency-data-hash)
-
-(defgeneric lookup-currency (ccy))
-
-(defmethod lookup-currency ((ccy string))
-  (gethash ccy *currency-data*))
-
-(defmethod lookup-currency ((ccy symbol))
-  (gethash (normalize-currency-designator ccy) *currency-data*))
-
-(defgeneric currency-data (ccy query))
-
-(defmethod currency-data (ccy (query (eql :ddigits)))
-  (let ((cd (lookup-currency ccy)))
-    (when ccy (ccy-ddigits cd))))
-
-(defmethod currency-data (ccy (query (eql :country)))
-  (let ((cd (lookup-currency ccy)))
-    (when ccy (ccy-country cd))))
-
-(defmethod currency-data (ccy (query (eql :name)))
-  (let ((cd (lookup-currency ccy)))
-    (when ccy (ccy-name cd))))
-
-(defmethod currency-data (ccy (query (eql :ncode)))
-  (let ((cd (lookup-currency ccy)))
-    (when ccy (ccy-ncode cd))))
 
 (defun parse-rational (string)
   (destructuring-bind (int frac)
