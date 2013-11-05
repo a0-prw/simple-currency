@@ -44,6 +44,9 @@
               (split-sequence:split-sequence #\- string))
     (simple-date:encode-date yr mo da)))
 
+(defun ccydb-date ()
+  (gethash "date" *currencies*))
+
 (defun normalize-currency-designator (kw)
   (cond ((stringp kw)
          (string-upcase kw))
