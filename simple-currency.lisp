@@ -130,6 +130,34 @@ codes call (AVAILABLE-CURRENCIES)."))
     (values (* amount (/ 1 (getbase nfrom)))
             (interval-since-update date))))
 
+(defgeneric get-quote (amount from to)
+  (:documentation "Return 3 values: 1) The conversion as a rational,
+  2) the rate for converting from FROM to TO as a rational, and 3) The
+  date for this quote. NB This is a different last value than CONVERT
+  returns."))
+
+(defmethod get-quote ((amount number) (from t) (to t))
+  (declare (inline normalize-currency-designator getbase))
+  (let* ((nfrom (normalize-currency-designator from))
+        (nto (normalize-currency-designator to))
+        (rate (/ (getbase nto) (getbase nfrom)))
+        (date (gethash "date" *currencies*)))
+    (values (* amount rate) rate date)))
+
+(defmethod get-quote ((amount number) (from (eql :eur)) (to t))
+  (declare (inline normalize-currency-designator getbase))
+  (let* ((nto (normalize-currency-designator to))
+        (date (gethash "date" *currencies*))
+        (rate (getbase nto)))
+    (values (* amount rate) rate date)))
+
+(defmethod get-quote ((amount number) (from t) (to (eql :eur)))
+  (declare (inline normalize-currency-designator getbase))
+  (let* ((nfrom (normalize-currency-designator from))
+         (date (gethash "date" *currencies*))
+         (rate (/ 1 (getbase nfrom))))
+    (values (* amount rate) rate date)))
+
 ;; These assume that 2 digits after the decimal are correct for the
 ;; currency and we don't give a damn about type of rounding
 ;; used. Yeeha!

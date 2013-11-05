@@ -30,7 +30,7 @@
   (:nicknames :cies)
   (:export :update-currency-hash
            :available-currencies
-           :convert :2dd-round :currency-data
+           :get-quote :convert :2dd-round :currency-data
            :lookup-currency :ccy-name :ccy-ddigits 
            :ccy-ncode :ccy-acode :ccy-country
            :display-currency :with-currency          
