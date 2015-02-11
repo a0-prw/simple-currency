@@ -34,5 +34,5 @@
            :lookup-currency :ccy-name :ccy-ddigits 
            :ccy-ncode :ccy-acode :ccy-country
            :display-currency :with-currency          
-           :ccydb-date
+           :ccydb-date :interval-since-update
            :*stored-currency-hash*))
