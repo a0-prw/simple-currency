@@ -40,7 +40,7 @@
     :author "Peter Wood, email: pete_wood at runbox.com"
     :license "BSD, 2 clause."
     :depends-on (:dexador
-                 :xmls
+                 :plump
                  :simple-date
                  :split-sequence
                  :cl-store)
