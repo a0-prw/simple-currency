@@ -11,11 +11,9 @@ documentation.
 
 Installation:
 
-This package uses DRAKMA, XMLS, SIMPLE-DATE, SPLIT-SEQUENCE, and
+This package uses DEXADOR, PLUMP, SIMPLE-DATE, SPLIT-SEQUENCE, and
 CL-STORE but if you use quicklisp (http://www.quicklisp.org/beta/),
-they will be automatically installed for you.  Put this package
-somewhere quicklisp can find it, by default under
-~/quicklisp/local-projects/.  Then do the following 2 things:
+they will be automatically installed for you.
 
 (ql:quickload :simple-currency)
 (CIES:UPDATE-CURRENCIES-HASH) ;;downloads currency info from ecb
