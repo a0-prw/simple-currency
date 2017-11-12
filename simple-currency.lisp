@@ -59,20 +59,22 @@
 *CURRENCIES* if the update is believed to be successful, or restores
 the old stored hash table if the call to ECB failed and returns the
 old table, or NIL if both options failed for any reason."
-  (let ((root (ignore-errors 
-               (plump:parse 
-                (dex:get  "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml")))))
-    (if root  
-	(progn
-	  (mapcar (lambda (c)
-		    (let ((cdata (plump:attributes c)))
-		      (cond ((= (hash-table-count cdata) 2)
-			     (setf (gethash (gethash "currency" cdata) *currencies*)
-				   (parse-rational (gethash "rate" cdata))))
-			    ((= (hash-table-count cdata) 1)
-			     (setf (gethash "date" *currencies*)
-				   (make-date (gethash "time" cdata))))
-			    (t nil)))) (plump:get-elements-by-tag-name root "Cube"))
+  (let ((xml (ignore-errors 
+               (xmls:parse 
+                (drakma:http-request 
+                 "http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml")))))
+    (if xml  ;; Apologies - this is particularly gross
+        (destructuring-bind ((jnk1 jnk2 (jnk3 ((dvar date)) &rest currencies)))
+            (xmls:xmlrep-find-child-tags "Cube" xml)
+          (declare (ignore jnk1 jnk2 jnk3 dvar))
+          (clrhash *currencies*)
+          (setf (gethash "date" *currencies*) (make-date date))
+          (mapcar #'(lambda (curr)
+                      (destructuring-bind (jnk ((ratevar rate) (currvar curr)))
+                          curr
+                        (declare (ignore jnk ratevar currvar))
+                        (setf (gethash curr *currencies*) (parse-rational rate))))
+                  currencies)
           (setf (gethash "EUR" *currencies*) 1)
           (cl-store:store *currencies* *stored-currency-hash*)
           *currencies*)
