@@ -39,7 +39,7 @@
     :version "0.0.1"
     :author "Peter Wood, email: pete_wood at runbox.com"
     :license "BSD, 2 clause."
-    :depends-on (:dexador
+    :depends-on (:drakma
                  :xmls
                  :simple-date
                  :split-sequence
